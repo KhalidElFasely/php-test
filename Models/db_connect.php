@@ -1,7 +1,5 @@
 <?php
 
-
-
 function getCn(){
 	static $cn;
 	//connexion à la base de données
@@ -18,35 +16,41 @@ function getCn(){
 	return $cn;
 }
 
-
-function getListeFilieres(){
-	return getCn()->query("select* from filiere")->fetchAll();
+function indexDisplay(){
+	$expenses = getListeExpenses();
+	require('Views/list.php');
 }
 
-function getDetailEtudiant($code) {
+function getListeExpenses(){
+	return getCn()->query("select * from expense")->fetchAll();
+}
+
+function getDetailExpense($id) {
 	$cn = getCn();
-	return $cn->query("select * from Etudiant where Code='$code'")-> fetch();
+	return $cn->query("select * from expense where id='$id'")-> fetch();
 }
 
 
-function getListeEtudiants(){
-	return getCn()->query("select* from etudiant")->fetchAll();
+function addExpense($title, $price, $note, $date){
+    $resultat = getCn()->prepare("insert into expense (title, price, note, date) values (?, ?, ?, ?)");
+    $data = [$title, $price, $note, $date];  // Create array of parameters
+    $resultat->execute($data);
+}
+
+function updateExpense($id, $title, $note, $date, $price) {
+    $req = getCn()->prepare("UPDATE expense SET title = :title, note = :note, date = :date, price = :price WHERE id = :id");
+    $req->bindParam(':title', $title, PDO::PARAM_STR);
+    $req->bindParam(':note', $note, PDO::PARAM_STR);
+    $req->bindParam(':date', $date, PDO::PARAM_STR);
+    $req->bindParam(':price', $price, PDO::PARAM_STR);
+    $req->bindParam(':id', $id, PDO::PARAM_INT);
+    $req->execute();
 }
 
 
-function ajouterEtudiant($t){
-	$resultat= getCn()->prepare("insert into Etudiant values (?,?,?,?,?)");
-	$resultat->execute($t);	
-}
-
-function updateEtudiant($t){
-	getCn()->exec("update Etudiant set Code='".$t["Code"]."', Nom='".$t["Nom"]."', Prenom='".$t["Prenom"]."',Filiere='".$t["Filiere"]."',Note=".$t["Note"]." where Code='".$t["oldCode"]."'");
-}
-
-
-function supprimerEtudiant($c){
-	$resultat= getCn()->prepare("delete from Etudiant where Code=?");
-	$resultat->execute([$c]);
+function deleteExpense($id){
+	$resultat= getCn()->prepare("delete from expense where id=?");
+	$resultat->execute([$id]);
 }
 
 

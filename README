@@ -1,0 +1,12 @@
+# Table structure
+```
+create table expense
+	(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    price double,
+    title varchar(75),
+	note varchar(255),
+    date date
+    )
+;
+```

@@ -5,7 +5,7 @@
     </head>
     <body>
         <h1>Add an expense:</h1>
-        <form action="handle_create.php" method="post">
+        <form action="../Controllers/handle_create.php" method="post">
             <pre>
                 Title: <input type="text" name="title">
                 Price: <input type="number" name="price">
